@@ -23,6 +23,7 @@ import com.example.everquillapp.models.ApiResponse;
 import com.example.everquillapp.models.Journal;
 import com.example.everquillapp.utils.TokenManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements JournalAdapter.On
     private ProgressBar progressBar;
     private View emptyView;
     private FloatingActionButton fabCreate;
+    private BottomNavigationView bottomNav;
     
     private ApiService apiService;
     private TokenManager tokenManager;
@@ -87,6 +89,32 @@ public class MainActivity extends AppCompatActivity implements JournalAdapter.On
         progressBar = findViewById(R.id.progress_bar);
         emptyView = findViewById(R.id.empty_view);
         fabCreate = findViewById(R.id.fab_create);
+        bottomNav = findViewById(R.id.bottom_navigation);
+        
+        // Setup bottom navigation
+        bottomNav.setSelectedItemId(R.id.nav_journals);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            
+            if (id == R.id.nav_journals) {
+                // Already on journals screen
+                return true;
+            } else if (id == R.id.nav_dashboard) {
+                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (id == R.id.nav_notifications) {
+                Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (id == R.id.nav_profile) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            
+            return false;
+        });
     }
     
     private void setupRecyclerView() {
@@ -217,6 +245,17 @@ public class MainActivity extends AppCompatActivity implements JournalAdapter.On
     }
     
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Update bottom nav selection when returning from other screens
+        if (bottomNav != null) {
+            bottomNav.setSelectedItemId(R.id.nav_journals);
+        }
+        // Reload journals
+        loadJournals();
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -238,7 +277,11 @@ public class MainActivity extends AppCompatActivity implements JournalAdapter.On
             startActivity(intent);
             return true;
         } else if (id == R.id.action_dashboard) {
-            Intent intent = new Intent(MainActivity.this, com.example.everquillapp.activities.DashboardActivity.class);
+            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_reviews) {
+            Intent intent = new Intent(MainActivity.this, ReviewsActivity.class);
             startActivity(intent);
             return true;
         }
