@@ -51,7 +51,7 @@ public interface ApiService {
     
     // ============ User Profile ============
     @GET("users/me")
-    Call<ApiResponse<User>> getCurrentUser();
+    Call<User> getCurrentUser();
     
     @PUT("users/me")
     Call<ApiResponse<User>> updateProfile(@Body Map<String, String> body);
