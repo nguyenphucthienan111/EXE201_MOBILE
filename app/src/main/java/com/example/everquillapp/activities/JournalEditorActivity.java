@@ -51,6 +51,9 @@ public class JournalEditorActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        // Ensure toolbar back works
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         
         // Initialize API
         apiService = ApiClient.getApiService(this);
@@ -106,21 +109,14 @@ public class JournalEditorActivity extends AppCompatActivity {
     private void loadJournal() {
         showLoading(true);
         
-        apiService.getJournal(journalId).enqueue(new Callback<ApiResponse<Journal>>() {
+        apiService.getJournal(journalId).enqueue(new Callback<Journal>() {
             @Override
-            public void onResponse(Call<ApiResponse<Journal>> call, Response<ApiResponse<Journal>> response) {
+            public void onResponse(Call<Journal> call, Response<Journal> response) {
                 showLoading(false);
                 
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<Journal> apiResponse = response.body();
-                    
-                    if (apiResponse.isSuccess() && apiResponse.getData() != null) {
-                        Journal journal = apiResponse.getData();
-                        populateFields(journal);
-                    } else {
-                        Toast.makeText(JournalEditorActivity.this, "Failed to load journal", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+                    Journal journal = response.body();
+                    populateFields(journal);
                 } else {
                     Toast.makeText(JournalEditorActivity.this, "Journal not found", Toast.LENGTH_SHORT).show();
                     finish();
@@ -128,7 +124,7 @@ public class JournalEditorActivity extends AppCompatActivity {
             }
             
             @Override
-            public void onFailure(Call<ApiResponse<Journal>> call, Throwable t) {
+            public void onFailure(Call<Journal> call, Throwable t) {
                 showLoading(false);
                 Toast.makeText(JournalEditorActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();

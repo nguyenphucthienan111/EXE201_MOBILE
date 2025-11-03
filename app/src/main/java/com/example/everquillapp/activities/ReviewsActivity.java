@@ -51,6 +51,9 @@ public class ReviewsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Reviews");
         }
+        toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        // Ensure back navigation works
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         
         // Initialize API
         apiService = ApiClient.getApiService(this);
@@ -119,7 +122,7 @@ public class ReviewsActivity extends AppCompatActivity {
     private void submitReview(float rating, String comment) {
         Map<String, Object> body = new HashMap<>();
         body.put("rating", (int) rating);
-        body.put("comment", comment);
+        body.put("feedback", comment);
         
         apiService.createReview(body).enqueue(new Callback<ApiResponse<Map<String, Object>>>() {
             @Override
@@ -128,7 +131,13 @@ public class ReviewsActivity extends AppCompatActivity {
                     Toast.makeText(ReviewsActivity.this, "Review submitted!", Toast.LENGTH_SHORT).show();
                     loadReviews();
                 } else {
-                    Toast.makeText(ReviewsActivity.this, "Failed to submit review", Toast.LENGTH_SHORT).show();
+                    String msg = "Failed to submit review";
+                    try {
+                        if (response.errorBody() != null) {
+                            msg = new org.json.JSONObject(response.errorBody().string()).optString("message", msg);
+                        }
+                    } catch (Exception ignored) {}
+                    Toast.makeText(ReviewsActivity.this, msg, Toast.LENGTH_SHORT).show();
                 }
             }
             
@@ -149,4 +158,5 @@ public class ReviewsActivity extends AppCompatActivity {
         return true;
     }
 }
+
 

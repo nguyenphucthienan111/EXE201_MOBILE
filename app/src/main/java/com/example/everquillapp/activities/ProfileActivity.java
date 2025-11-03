@@ -66,6 +66,10 @@ public class ProfileActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        // Ensure a visible back icon
+        toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        // Ensure back button works even if menu handling is skipped
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         // Init
         apiService = ApiClient.getApiService(this);

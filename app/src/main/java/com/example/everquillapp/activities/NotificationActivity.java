@@ -50,6 +50,9 @@ public class NotificationActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Notifications");
         }
+        toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        // Ensure back button works from toolbar
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         
         // Initialize API
         apiService = ApiClient.getApiService(this);
@@ -83,31 +86,31 @@ public class NotificationActivity extends AppCompatActivity {
     private void loadNotifications() {
         showLoading(true);
         
-        apiService.getNotifications(1, 50, null).enqueue(new Callback<ApiResponse<List<Map<String, Object>>>>() {
+        apiService.getNotifications(1, 50, null).enqueue(new Callback<ApiResponse<Map<String, Object>>>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<Map<String, Object>>>> call, Response<ApiResponse<List<Map<String, Object>>>> response) {
+            public void onResponse(Call<ApiResponse<Map<String, Object>>> call, Response<ApiResponse<Map<String, Object>>> response) {
                 showLoading(false);
                 swipeRefresh.setRefreshing(false);
                 
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<List<Map<String, Object>>> apiResponse = response.body();
-                    
-                    if (apiResponse.isSuccess() && apiResponse.getData() != null) {
-                        notificationList.clear();
-                        notificationList.addAll(apiResponse.getData());
-                        adapter.notifyDataSetChanged();
-                        
-                        updateEmptyView();
-                    } else {
-                        Toast.makeText(NotificationActivity.this, "Failed to load notifications", Toast.LENGTH_SHORT).show();
+                    ApiResponse<Map<String, Object>> apiResponse = response.body();
+                    Map<String, Object> data = apiResponse.getData();
+                    List<Map<String, Object>> items = new java.util.ArrayList<>();
+                    if (data != null && data.get("notifications") instanceof List) {
+                        //noinspection unchecked
+                        items = (List<Map<String, Object>>) data.get("notifications");
                     }
+                    notificationList.clear();
+                    notificationList.addAll(items);
+                    adapter.notifyDataSetChanged();
+                    updateEmptyView();
                 } else {
                     Toast.makeText(NotificationActivity.this, "Failed to load notifications", Toast.LENGTH_SHORT).show();
                 }
             }
             
             @Override
-            public void onFailure(Call<ApiResponse<List<Map<String, Object>>>> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<Map<String, Object>>> call, Throwable t) {
                 showLoading(false);
                 swipeRefresh.setRefreshing(false);
                 Toast.makeText(NotificationActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -167,4 +170,5 @@ public class NotificationActivity extends AppCompatActivity {
         return true;
     }
 }
+
 

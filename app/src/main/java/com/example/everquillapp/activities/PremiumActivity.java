@@ -41,6 +41,9 @@ public class PremiumActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        // Ensure toolbar back works
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         
         // Initialize API
         apiService = ApiClient.getApiService(this);
@@ -106,4 +109,5 @@ public class PremiumActivity extends AppCompatActivity {
         return true;
     }
 }
+
 

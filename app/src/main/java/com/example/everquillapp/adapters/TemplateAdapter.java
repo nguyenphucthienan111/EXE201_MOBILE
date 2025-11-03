@@ -89,3 +89,4 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.Templa
     }
 }
 
+

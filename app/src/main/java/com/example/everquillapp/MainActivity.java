@@ -130,31 +130,24 @@ public class MainActivity extends AppCompatActivity implements JournalAdapter.On
         params.put("page", "1");
         params.put("limit", "100");
         
-        apiService.getJournals(params).enqueue(new Callback<ApiResponse<List<Journal>>>() {
+        apiService.getJournals(params).enqueue(new Callback<List<Journal>>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<Journal>>> call, Response<ApiResponse<List<Journal>>> response) {
+            public void onResponse(Call<List<Journal>> call, Response<List<Journal>> response) {
                 showLoading(false);
                 swipeRefresh.setRefreshing(false);
                 
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<List<Journal>> apiResponse = response.body();
-                    
-                    if (apiResponse.isSuccess() && apiResponse.getData() != null) {
-                        journalList.clear();
-                        journalList.addAll(apiResponse.getData());
-                        adapter.notifyDataSetChanged();
-                        
-                        updateEmptyView();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Failed to load journals", Toast.LENGTH_SHORT).show();
-                    }
+                    journalList.clear();
+                    journalList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                    updateEmptyView();
                 } else {
                     Toast.makeText(MainActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 }
             }
             
             @Override
-            public void onFailure(Call<ApiResponse<List<Journal>>> call, Throwable t) {
+            public void onFailure(Call<List<Journal>> call, Throwable t) {
                 showLoading(false);
                 swipeRefresh.setRefreshing(false);
                 Toast.makeText(MainActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();

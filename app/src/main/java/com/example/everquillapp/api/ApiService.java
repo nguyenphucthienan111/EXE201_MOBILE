@@ -71,10 +71,10 @@ public interface ApiService {
     
     // ============ Journals ============
     @GET("journals")
-    Call<ApiResponse<List<Journal>>> getJournals(@QueryMap Map<String, String> params);
+    Call<List<Journal>> getJournals(@QueryMap Map<String, String> params);
     
     @GET("journals/{id}")
-    Call<ApiResponse<Journal>> getJournal(@Path("id") String id);
+    Call<Journal> getJournal(@Path("id") String id);
     
     @POST("journals")
     Call<ApiResponse<Journal>> createJournal(@Body Map<String, Object> body);
@@ -138,7 +138,7 @@ public interface ApiService {
     
     // ============ Notifications ============
     @GET("notifications")
-    Call<ApiResponse<List<Map<String, Object>>>> getNotifications(
+    Call<ApiResponse<Map<String, Object>>> getNotifications(
             @Query("page") int page,
             @Query("limit") int limit,
             @Query("unread") Boolean unread

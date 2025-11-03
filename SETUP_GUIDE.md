@@ -218,3 +218,4 @@ After basic setup works:
 7. Create home screen widgets
 
 Happy coding! 🚀
+

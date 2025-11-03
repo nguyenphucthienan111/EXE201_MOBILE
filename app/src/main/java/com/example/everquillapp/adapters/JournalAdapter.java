@@ -151,3 +151,4 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.JournalV
     }
 }
 
+

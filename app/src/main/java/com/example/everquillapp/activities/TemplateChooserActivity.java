@@ -46,6 +46,9 @@ public class TemplateChooserActivity extends AppCompatActivity implements Templa
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Choose Template");
         }
+        toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        // Ensure back navigation works from toolbar
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         
         // Initialize API
         apiService = ApiClient.getApiService(this);
@@ -114,4 +117,5 @@ public class TemplateChooserActivity extends AppCompatActivity implements Templa
         return true;
     }
 }
+
 
