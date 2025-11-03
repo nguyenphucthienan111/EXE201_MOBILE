@@ -79,6 +79,25 @@
             android:name=".activities.PremiumActivity"
             android:exported="false"
             android:theme="@style/Theme.EverquillApp" />
+
+        <!-- Payment Result Deep Links -->
+        <activity
+            android:name=".activities.PaymentResultActivity"
+            android:exported="true"
+            android:theme="@style/Theme.EverquillApp.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="everquill" android:host="payment" android:path="/success" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="everquill" android:host="payment" android:path="/cancel" />
+            </intent-filter>
+        </activity>
         
         <!-- Template Chooser Activity -->
         <activity

@@ -3,11 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -34,7 +36,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/premium_title"
+                android:text="Upgrade to Pro"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
@@ -50,7 +52,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="32dp" />
 
-            <!-- Features List -->
+            <!-- FREE Plan Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,11 +67,20 @@
                     android:padding="16dp">
 
                     <TextView
-                        android:text="Premium Features"
+                        android:text="Free"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
                         android:layout_marginBottom="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:text="0đ / forever"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:layout_marginBottom="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -88,7 +99,7 @@
                             android:layout_marginEnd="12dp" />
 
                         <TextView
-                            android:text="@string/premium_feature_unlimited_journals"
+                            android:text="Daily diary (1–2 posts/day)"
                             android:textSize="14sp"
                             android:textColor="@color/text_primary"
                             android:layout_width="wrap_content"
@@ -110,7 +121,7 @@
                             android:layout_marginEnd="12dp" />
 
                         <TextView
-                            android:text="@string/premium_feature_ai"
+                            android:text="Mood tracking calendar"
                             android:textSize="14sp"
                             android:textColor="@color/text_primary"
                             android:layout_width="wrap_content"
@@ -132,7 +143,7 @@
                             android:layout_marginEnd="12dp" />
 
                         <TextView
-                            android:text="@string/premium_feature_templates"
+                            android:text="Basic AI writing prompts"
                             android:textSize="14sp"
                             android:textColor="@color/text_primary"
                             android:layout_width="wrap_content"
@@ -154,17 +165,26 @@
                             android:layout_marginEnd="12dp" />
 
                         <TextView
-                            android:text="Cloud Sync &amp; Backup"
+                            android:text="Manual wellness index (1–10)"
                             android:textSize="14sp"
                             android:textColor="@color/text_primary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_current_plan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Your current plan"
+                        android:layout_marginTop="8dp"
+                        style="@style/Widget.Everquill.Button.Primary"
+                        android:backgroundTint="@color/primary_light" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Monthly Plan -->
+            <!-- PRO Plan Card (Monthly) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -179,7 +199,7 @@
                     android:padding="16dp">
 
                     <TextView
-                        android:text="Monthly Plan"
+                        android:text="Pro"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
@@ -187,7 +207,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:text="99,000 VND / month"
+                        android:text="41.000đ / month"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
@@ -195,82 +215,32 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp">
+                        <TextView android:text="Advanced AI sentiment analysis" android:textColor="@color/text_primary" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        <TextView android:text="Personal AI assistant" android:textColor="@color/text_primary" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        <TextView android:text="Smart topic suggestions" android:textColor="@color/text_primary" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        <TextView android:text="Insights dashboard &amp; trends" android:textColor="@color/text_primary" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        <TextView android:text="Personalized improvement plan" android:textColor="@color/text_primary" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        <TextView android:text="Priority support" android:textColor="@color/text_primary" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
+
                     <Button
                         android:id="@+id/btn_monthly"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Subscribe Monthly"
+                        android:text="Upgrade to Pro"
                         android:layout_marginTop="16dp"
+                        style="@style/Widget.Everquill.Button.Primary"
                         android:backgroundTint="@color/primary" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-            <!-- Yearly Plan -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:text="Yearly Plan"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:text="SAVE 15%"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/white"
-                            android:background="@color/success"
-                            android:padding="4dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:text="999,000 VND / year"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/accent"
-                        android:layout_marginTop="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:text="Only 83,250 VND/month"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginTop="4dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/btn_yearly"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Subscribe Yearly"
-                        android:layout_marginTop="16dp"
-                        android:backgroundTint="@color/accent" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            
+            <!-- Yearly Plan removed per request -->
 
             <!-- Progress Bar -->
             <ProgressBar

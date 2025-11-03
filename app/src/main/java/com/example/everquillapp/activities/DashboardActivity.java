@@ -105,28 +105,50 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
     
+    @SuppressWarnings("unchecked")
     private void displayDashboard(Map<String, Object> data) {
-        // Display stats
-        Object total = data.get("totalJournals");
-        if (total != null) {
-            txtTotalJournals.setText(String.valueOf(total));
+        // Stats
+        Object statsObj = data.get("journalStats");
+        if (statsObj instanceof Map) {
+            Object total = ((Map<String, Object>) statsObj).get("totalEntries");
+            if (total != null) txtTotalJournals.setText(String.valueOf(total));
         }
-        
-        // Setup Mood Pie Chart
-        setupMoodPieChart();
-        
-        // Setup Activity Bar Chart  
-        setupActivityBarChart();
+
+        // Mood trends chartData -> build distributions & series
+        Map<String, Object> moodTrends = null;
+        Object mt = data.get("moodTrends");
+        if (mt instanceof Map) moodTrends = (Map<String, Object>) mt;
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        if (moodTrends != null) {
+            Object cd = moodTrends.get("chartData");
+            if (cd instanceof List) chartData = (List<Map<String, Object>>) cd;
+        }
+
+        setupMoodPieChartFrom(chartData);
+        setupActivityBarChartFrom(chartData);
     }
-    
-    private void setupMoodPieChart() {
+
+    private void setupMoodPieChartFrom(List<Map<String, Object>> chartData) {
+        // Categorize scores into 4 buckets using thresholds
+        float happy=0, calm=0, anxious=0, sad=0;
+        for (Map<String, Object> item : chartData) {
+            double score = toDouble(item.get("score"));
+            if (score >= 7) happy += 1f;
+            else if (score >= 5) calm += 1f;
+            else if (score >= 3) anxious += 1f;
+            else sad += 1f;
+        }
+
+        if (happy+calm+anxious+sad == 0) {
+            happy = 1; calm = anxious = sad = 1; // fallback equal parts
+        }
+
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(30f, "Happy"));
-        entries.add(new PieEntry(20f, "Sad"));
-        entries.add(new PieEntry(15f, "Calm"));
-        entries.add(new PieEntry(20f, "Anxious"));
-        entries.add(new PieEntry(15f, "Excited"));
-        
+        entries.add(new PieEntry(happy, "Happy"));
+        entries.add(new PieEntry(calm, "Calm"));
+        entries.add(new PieEntry(anxious, "Anxious"));
+        entries.add(new PieEntry(sad, "Sad"));
+
         PieDataSet dataSet = new PieDataSet(entries, "Mood Distribution");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(12f);
@@ -142,17 +164,19 @@ public class DashboardActivity extends AppCompatActivity {
         pieChartMoods.invalidate();
     }
     
-    private void setupActivityBarChart() {
+    private void setupActivityBarChartFrom(List<Map<String, Object>> chartData) {
+        // Use mood score series as activity (proxy). Shows last N points.
         List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(1f, 5));
-        entries.add(new BarEntry(2f, 8));
-        entries.add(new BarEntry(3f, 3));
-        entries.add(new BarEntry(4f, 10));
-        entries.add(new BarEntry(5f, 7));
-        entries.add(new BarEntry(6f, 6));
-        entries.add(new BarEntry(7f, 12));
-        
-        BarDataSet dataSet = new BarDataSet(entries, "Journals per Day");
+        int i = 1;
+        for (Map<String, Object> item : chartData) {
+            float y = (float) toDouble(item.get("score"));
+            entries.add(new BarEntry(i++, y));
+        }
+        if (entries.isEmpty()) {
+            entries.add(new BarEntry(1f, 0f));
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "Mood Score Trend");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(10f);
         
@@ -161,6 +185,11 @@ public class DashboardActivity extends AppCompatActivity {
         barChartActivity.getDescription().setEnabled(false);
         barChartActivity.animateY(1000);
         barChartActivity.invalidate();
+    }
+
+    private double toDouble(Object v) {
+        if (v instanceof Number) return ((Number) v).doubleValue();
+        try { return Double.parseDouble(String.valueOf(v)); } catch (Exception e) { return 0d; }
     }
     
     private void showLoading(boolean show) {

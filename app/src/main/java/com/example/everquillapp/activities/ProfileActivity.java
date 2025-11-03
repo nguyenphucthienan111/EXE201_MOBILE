@@ -88,6 +88,13 @@ public class ProfileActivity extends AppCompatActivity {
         btnUpgradePremium.setOnClickListener(v -> navigateToPremium());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh user info when coming back from Premium
+        loadUserData();
+    }
+
     private void initViews() {
         imgAvatar = findViewById(R.id.img_avatar);
         txtName = findViewById(R.id.txt_name);

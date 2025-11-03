@@ -130,11 +130,17 @@ public interface ApiService {
     @GET("plans")
     Call<ApiResponse<List<Map<String, Object>>>> getPlans();
     
-    @POST("payments/create")
+    @POST("payments/premium")
     Call<ApiResponse<Map<String, String>>> createPayment(@Body Map<String, Object> body);
     
     @GET("payments/{id}")
     Call<ApiResponse<Map<String, Object>>> getPayment(@Path("id") String id);
+
+    @GET("payments/confirm/{paymentId}")
+    Call<ApiResponse<Map<String, Object>>> confirmPayment(@Path("paymentId") String paymentId);
+
+    @GET("payments/check-user-plan")
+    Call<ApiResponse<Map<String, Object>>> checkUserPlan();
     
     // ============ Notifications ============
     @GET("notifications")

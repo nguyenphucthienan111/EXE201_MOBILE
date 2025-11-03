@@ -7,6 +7,9 @@
         <item name="colorAccent">@color/accent</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
+        <!-- Apply unified button & card styles -->
+        <item name="materialButtonStyle">@style/Widget.Everquill.Button.Primary</item>
+        <item name="cardViewStyle">@style/Widget.Everquill.Card</item>
     </style>
 
     <style name="Theme.EverquillApp" parent="Base.Theme.EverquillApp" />
@@ -14,5 +17,20 @@
     <style name="Theme.EverquillApp.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Unified components -->
+    <style name="Widget.Everquill.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:layout_height">@dimen/ever_btn_height</item>
+        <item name="cornerRadius">@dimen/ever_radius</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.Everquill.Card" parent="@style/CardView">
+        <item name="cardCornerRadius">@dimen/ever_radius</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">@color/surface</item>
     </style>
 </resources>

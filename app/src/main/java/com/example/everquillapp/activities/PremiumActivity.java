@@ -2,6 +2,8 @@ package com.example.everquillapp.activities;
 
 import android.os.Bundle;
 import android.view.View;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,9 +28,10 @@ import retrofit2.Response;
 
 public class PremiumActivity extends AppCompatActivity {
     
-    private Button btnMonthly, btnYearly;
+    private Button btnMonthly;
     private ProgressBar progressBar;
     private ApiService apiService;
+    private Button btnCurrentPlanFree;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +53,50 @@ public class PremiumActivity extends AppCompatActivity {
         
         // Initialize views
         btnMonthly = findViewById(R.id.btn_monthly);
-        btnYearly = findViewById(R.id.btn_yearly);
+        btnCurrentPlanFree = findViewById(R.id.btn_current_plan);
         progressBar = findViewById(R.id.progress_bar);
         
         // Set click listeners
-        btnMonthly.setOnClickListener(v -> subscribePlan("monthly", 99000));
-        btnYearly.setOnClickListener(v -> subscribePlan("yearly", 999000));
+        btnMonthly.setOnClickListener(v -> subscribePlan("monthly", 41000));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshPlanUi();
     }
     
+    private void refreshPlanUi() {
+        apiService.checkUserPlan().enqueue(new Callback<ApiResponse<Map<String, Object>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Map<String, Object>>> call, Response<ApiResponse<Map<String, Object>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Map<String, Object> data = response.body().getData();
+                    String currentPlan = data != null && data.get("currentPlan") != null ? data.get("currentPlan").toString() : "free";
+                    if ("premium".equalsIgnoreCase(currentPlan)) {
+                        // Pro is current plan
+                        btnMonthly.setText(R.string.premium_your_current_plan);
+                        btnMonthly.setEnabled(false);
+                        if (btnCurrentPlanFree != null) {
+                            btnCurrentPlanFree.setText("Free plan");
+                            btnCurrentPlanFree.setEnabled(false);
+                        }
+                    } else {
+                        btnMonthly.setText(R.string.premium_upgrade_to_pro);
+                        btnMonthly.setEnabled(true);
+                        if (btnCurrentPlanFree != null) {
+                            btnCurrentPlanFree.setText(R.string.premium_your_current_plan);
+                            btnCurrentPlanFree.setEnabled(false);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Map<String, Object>>> call, Throwable t) { }
+        });
+    }
+
     private void subscribePlan(String plan, int amount) {
         showLoading(true);
         
@@ -75,13 +114,28 @@ public class PremiumActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse<Map<String, String>> apiResponse = response.body();
                     
-                    if (apiResponse.isSuccess() && apiResponse.getData() != null) {
-                        Map<String, String> data = apiResponse.getData();
-                        String checkoutUrl = data.get("checkoutUrl");
+                        if (apiResponse.isSuccess() && apiResponse.getData() != null) {
+                            Map<String, String> data = apiResponse.getData();
+                            String paymentId = data.get("paymentId");
+                            if (paymentId != null) {
+                                getSharedPreferences("everquill", MODE_PRIVATE)
+                                        .edit()
+                                        .putString("lastPaymentId", paymentId)
+                                        .apply();
+                            }
+                            // BE returns 'paymentUrl'; fallback to 'checkoutUrl' just in case
+                            String checkoutUrl = data.get("paymentUrl");
+                            if (checkoutUrl == null) checkoutUrl = data.get("checkoutUrl");
                         
                         if (checkoutUrl != null) {
-                            // TODO: Open WebView or external browser for payment
-                            Toast.makeText(PremiumActivity.this, "Payment URL: " + checkoutUrl, Toast.LENGTH_LONG).show();
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(checkoutUrl));
+                                startActivity(intent);
+                            } catch (Exception e) {
+                                Toast.makeText(PremiumActivity.this, "Open payment URL failed", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(PremiumActivity.this, "Payment link not available", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(PremiumActivity.this, "Failed to create payment", Toast.LENGTH_SHORT).show();

@@ -4,9 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     
     <!-- App Colors -->
-    <color name="primary">#6366F1</color>
-    <color name="primary_dark">#4F46E5</color>
-    <color name="primary_light">#818CF8</color>
+    <!-- Brand purple aligned with web -->
+    <color name="primary">#6B46C1</color>
+    <color name="primary_dark">#5B3AB3</color>
+    <color name="primary_light">#8B6CF6</color>
     
     <color name="accent">#10B981</color>
     <color name="background">#F9FAFB</color>

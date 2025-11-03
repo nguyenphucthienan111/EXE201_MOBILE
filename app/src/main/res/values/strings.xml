@@ -42,6 +42,8 @@
     <string name="premium_feature_unlimited_journals">Unlimited Journals</string>
     <string name="premium_feature_ai">Advanced AI Analysis</string>
     <string name="premium_feature_templates">Custom Templates</string>
+    <string name="premium_upgrade_to_pro">Upgrade to Pro</string>
+    <string name="premium_your_current_plan">Your current plan</string>
     
     <!-- Profile -->
     <string name="profile_edit">Edit Profile</string>
